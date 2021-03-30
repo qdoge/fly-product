@@ -59,7 +59,7 @@ export default {
             this.handleArray = val;
         },
         handlePay (){
-            this.$confirm('你确定支付吗hhh?', '提示', {
+            this.$confirm('你确定支付吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
