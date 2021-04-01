@@ -1,5 +1,6 @@
 <template>
     <div class='nav-box'>
+        <img src='../../assets/t_logo.jpeg' class='logo'/>
         <el-menu
             :default-active="$route.path"
             class="el-menu-vertical-demo"
@@ -30,8 +31,15 @@ export default {
     .nav-box{
         width: 100%;
         height: 100%;
+        padding-top: 20px;
+    }
+    .logo{
+        width: 80%;
+        display: block;
+        margin: 0 auto 20px;
     }
     .el-menu{
         height: 100%;
+        border-right: none!important;
     }
 </style>

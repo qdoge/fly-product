@@ -1,7 +1,7 @@
 <template>
     <div class='review-box'>
         <p class='re-title'>等待审核</p>
-        <p class='re-date'>{{getTime()}}</p>
+        <p class='re-date'>{{timer}}</p>
         <div>
             <el-table
                 ref="multipleTable"
@@ -26,7 +26,7 @@
                 <el-table-column
                 label="日期"
                 width="120">
-                    <template slot-scope="scope">{{ getTimeSimple(scope.row.date) }}</template>
+                    <template slot-scope="scope">{{ scope.row.date }}</template>
                 </el-table-column>
                 <el-table-column
                 prop="number"
@@ -49,7 +49,8 @@ export default {
     data (){
         return {
             tableData:JSON.parse(window.sessionStorage.getItem('tableData')),
-            handleArray: []
+            handleArray: [],
+            timer: getTime(),
         }
     },
     methods: {
@@ -59,6 +60,13 @@ export default {
             this.handleArray = val;
         },
         handleDelete (){
+            if(this.handleArray.length == 0){
+                this.$message({
+                    type: 'warning',
+                    message: '请勾选需要删除的项目'
+                });
+                return;
+            }
             this.$confirm('此操作将删除选中的费用报销单, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -80,6 +88,13 @@ export default {
             });
         },
         handleReview (){
+            if(this.handleArray.length == 0){
+                this.$message({
+                    type: 'warning',
+                    message: '请勾选需要审核的项目'
+                });
+                return;
+            }
             this.$confirm('确定审核选中的费用报销单, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -89,14 +104,29 @@ export default {
                     if(!this.handleArray.includes(items)) return items;
                 })
                 window.sessionStorage.setItem('tableData',JSON.stringify(this.tableData));
-                this.$router.push({name: 'Pay'});
+                // this.$router.push({name: 'Pay'});
                 window.sessionStorage.setItem('arrayData',JSON.stringify(this.handleArray));
+                this.$message({
+                    type: 'success',
+                    message: '费用报销单审核成功!'
+                });
             }).catch(() => {
                 this.$message({
                     type: 'info',
                     message: '已取消审核'
                 });          
             });
+        }
+    },
+    mounted (){
+        let that = this;
+        this.theTime = setInterval(() => {
+            that.timer = this.getTime();
+        },1000);
+    },
+    beforeDestroy (){
+        if (this.theTime) {
+            clearInterval(this.theTime); // 在Vue实例销毁前，清除我们的定时器
         }
     }
 }

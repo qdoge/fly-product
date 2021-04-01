@@ -1,7 +1,7 @@
 <template>
     <div class='pay-box'>
         <p class='re-title'>等待支付</p>
-        <p class='re-date'>{{getTime()}}</p>
+        <p class='re-date'>{{timer}}</p>
         <div>
             <el-table
                 ref="multipleTable"
@@ -26,7 +26,7 @@
                 <el-table-column
                 label="日期"
                 width="120">
-                    <template slot-scope="scope">{{ getTimeSimple(scope.row.date) }}</template>
+                    <template slot-scope="scope">{{scope.row.date}}</template>
                 </el-table-column>
                 <el-table-column
                 prop="number"
@@ -49,7 +49,8 @@ export default {
     data (){
         return{
             tableData : JSON.parse(window.sessionStorage.getItem('arrayData')),
-            handleArray: []
+            handleArray: [],
+            timer: getTime(),
         }
     },
     methods: {
@@ -59,6 +60,13 @@ export default {
             this.handleArray = val;
         },
         handlePay (){
+            if(this.handleArray.length == 0){
+                this.$message({
+                    type: 'warning',
+                    message: '请勾选需要支付的项目'
+                });
+                return;
+            }
             this.$confirm('你确定支付吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -78,6 +86,17 @@ export default {
                     message: '已取消支付'
                 });          
             });
+        }
+    },
+    mounted (){
+        let that = this;
+        this.theTime = setInterval(() => {
+            that.timer = this.getTime();
+        },1000);
+    },
+    beforeDestroy (){
+        if (this.theTime) {
+            clearInterval(this.theTime); // 在Vue实例销毁前，清除我们的定时器
         }
     }
 }

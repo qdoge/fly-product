@@ -28,6 +28,9 @@
   .el-container{
     min-height: 100vh;
   }
+  .el-aside{
+      border-right: 1px solid #e6e6e6!important;
+  }
   #app{
     width: 100%;
   }
